@@ -1,10 +1,11 @@
 elasticsearch:
-  image: elasticsearch:latest
+  image: elasticsearch:2.3.4
   command: elasticsearch -Des.network.host=0.0.0.0
   ports:
     - "9200:9200"
     - "9300:9300"
-
+  volumes:
+    - /mnt/var/lib/elasticsearch/data:/usr/share/elasticsearch/data
 logstash:
   build: logstash/
   command: logstash -f /etc/logstash/conf.d/logstash.conf
@@ -14,6 +15,9 @@ logstash:
     - "5000:5000"
   links:
     - elasticsearch
+  environment:
+    - LS_HEAP_SIZE=2048m
+
 kibana:
   build: kibana/
   volumes:
